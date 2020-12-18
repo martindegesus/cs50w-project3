@@ -7,3 +7,35 @@ textarea {
     border-width: 1px;
     padding: 5px;
 }
+
+.card{
+    width:40rem;
+    margin: 3rem;
+}
+
+.cardheader{
+    padding: 1rem;
+    width:40rem;
+}
+
+
+.cardbody{
+    padding: 10rem;
+    width:40rem;
+}
+
+.cardtext{
+    margin-bottom:5rem;
+
+}
+
+.cardfooter{
+    width:40rem;
+    padding-left:20rem;
+}
+
+#compose-form{
+    padding-top:2rem;
+    padding-left:2rem;
+    padding-right:4rem;
+}

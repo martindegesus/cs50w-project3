@@ -1,5 +1,6 @@
+console.log("hehe")
 document.addEventListener('DOMContentLoaded', function() {
-
+  console.log("hehe2")
   // Use buttons to toggle between views
   document.querySelector('#inbox').addEventListener('click', () => load_mailbox('inbox'));
   document.querySelector('#sent').addEventListener('click', () => load_mailbox('sent'));
@@ -19,16 +20,13 @@ function compose_email(mail) {
   document.querySelector('#compose-view').style.display = 'block';
   document.querySelector('#detailed-mail-view').style.display = 'none';
   
-  console.log("HELP");
   if(mail===""){
-    console.log("empty");
     // Clear out composition fields
   document.querySelector('#compose-recipients').value = '';
   document.querySelector('#compose-subject').value = '';
   document.querySelector('#compose-body').value = '';
   }
   else{
-    console.log("not empty");
     //fill data
     document.querySelector('#compose-recipients').value = mail.sender;
     document.querySelector('#compose-subject').value = `Re: ${mail.subject}`;
@@ -46,46 +44,78 @@ function view_mail(mailid){
   const node = document.querySelector('#detailed-mail-view');
   while(node.firstChild){
     document.querySelector('#detailed-mail-view').removeChild(node.lastChild);
-    console.log("im TRYING");
   }
-  console.log("try harder");
   fetch(`/emails/${mailid}`,{
     method: 'GET',
   })
   .then(response => response.json())
   .then(email => {
-      // Print emails
-
-      // ... do something else with emails ...
-
-
-      //mark as read
-      
-
       //display mail
+
+    const card = document.createElement('button')
+    card.className='card'
+    const cardheader = document.createElement('div')
+    cardheader.className= "card-header"
+    const cardflexheader = document.createElement('div')
+    cardflexheader.className= "d-flex justify-content-between"
+    const cardsender = document.createElement('p')
+    cardsender.className="card-title"
+    const carddate = document.createElement('p')
+    carddate.className="card-title"
+    const cardbody = document.createElement('div')
+    cardbody.className="card-text"
+    const cardfooter = document.createElement('div')
+    cardfooter.className="card-footer text-muted"
+
+    card.append(cardheader,cardbody,cardfooter)
+    cardheader.append(cardflexheader)
+    cardflexheader.append(cardsender,carddate)
+
+    // <div class="card">
+    //   <h5 class="card-header">Featured</h5>
+    //   <div class="card-body">
+    //     <h5 class="card-title">Special title treatment</h5>
+    //     <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+    //     <a href="#" class="btn btn-primary">Go somewhere</a>
+    //   </div>
+    // </div>
+
+
+
+
       const replybutton = document.createElement('button')
+      replybutton.className="btn btn-sm btn-outline-primary"
       replybutton.innerHTML='Reply'
-      const mailunit = document.createElement('div')
-      mailunit.className= "mailunit"
-      const sender = document.createElement('p')
-      sender.className="sender"
-      const body = document.createElement('p')
-      body.className="body"
-      const timestamp = document.createElement('p')
-      timestamp.className="timestamp"
-      sender.innerHTML = email.sender
-      body.innerHTML = email.body
-      timestamp.innerHTML = email.timestamp
-      mailunit.append(sender,body,timestamp, replybutton);
+
+
+      // const mailunit = document.createElement('div')
+      // mailunit.className= "mailunit"
+      // const sender = document.createElement('p')
+      // sender.className="sender"
+      // const body = document.createElement('p')
+      // body.className="body"
+      // const timestamp = document.createElement('p')
+      // timestamp.className="timestamp"
+
+
+      cardsender.innerHTML = email.sender
+      cardbody.innerHTML = email.body
+      carddate.innerHTML = email.timestamp
+      
+      
+      //mailunit.append(sender,body,timestamp, replybutton);
+
+
       if (email.read == true){
-        mailunit.style.backgroundColor="lightgray";
+        cardbody.style.backgroundColor="lightgray";
       }
       replybutton.addEventListener('click', () => {
         compose_email(email);
       });
       
-      console.log(mailunit)
-      document.querySelector('#detailed-mail-view').append(mailunit);
+
+      cardfooter.append(replybutton)
+      document.querySelector('#detailed-mail-view').append(card);
       });
         
 }
@@ -106,26 +136,50 @@ function load_mailbox(mailbox) {
   })
   .then(response => response.json())
   .then(emails => {
-      // Print emails
-      console.log(emails);
-
-      // ... do something else with emails ...
       emails.forEach(email => {
-        console.log(email.archived== false)
         
-        const mailunit = document.createElement('div')
-        mailunit.className= "mailunit"
-        const sender = document.createElement('p')
-        sender.className="sender"
-        const body = document.createElement('p')
-        body.className="body"
-        const timestamp = document.createElement('p')
-        timestamp.className="timestamp"
-        sender.innerHTML = email.sender
-        body.innerHTML = email.body
-        timestamp.innerHTML = email.timestamp
+        const card = document.createElement('div')
+        card.className='card'
+        const cardheader = document.createElement('div')
+        cardheader.className= "card-header"
+        const cardflexheader = document.createElement('div')
+        cardflexheader.className= "d-flex justify-content-between"
+        const cardsender = document.createElement('p')
+        cardsender.className="card-title"
+        const carddate = document.createElement('p')
+        carddate.className="card-title"
+        const cardtext = document.createElement('p')
+        cardtext.className="card-text"
+        const cardbody = document.createElement('div')
+        cardbody.className="card-body"
+        const cardfooter = document.createElement('div')
+        cardfooter.className="card-footer text-muted"
+    
+        card.append(cardheader,cardbody,cardfooter)
+        cardbody.append(cardtext)
+        cardheader.append(cardflexheader)
+        cardflexheader.append(cardsender,carddate)
+    
+
+
+        // const mailunit = document.createElement('div')
+        // mailunit.className= "mailunit"
+        // const sender = document.createElement('p')
+        // sender.className="sender"
+        // const body = document.createElement('p')
+        // body.className="body"
+        // const timestamp = document.createElement('p')
+        // timestamp.className="timestamp"
+
+
+        cardsender.innerHTML = email.sender
+        cardtext.innerHTML = email.body
+        carddate.innerHTML = email.timestamp
+
+
         if(mailbox!=='sent'){
           const archivebutton = document.createElement('button')
+          archivebutton.className="btn btn-sm btn-outline-primary"
           if (email.archived== false){
             archivebutton.innerHTML='Archive';
             archivebutton.addEventListener('click', () => {
@@ -150,16 +204,18 @@ function load_mailbox(mailbox) {
               }).then(()=>load_mailbox('inbox'))
             });
           }
-          mailunit.append(sender,body,timestamp,archivebutton)
+          cardfooter.append(archivebutton)
         }
-        else{
-          mailunit.append(sender,body,timestamp);
-        }
+
+
+        // else{
+        //   mailunit.append(sender,body,timestamp);
+        // }
         
         if (email.read == true){
-          mailunit.style.backgroundColor="lightgray";
+          cardbody.style.backgroundColor="lightgray";
         }
-        mailunit.addEventListener('click', () => {
+        card.addEventListener('click', () => {
           fetch(`/emails/${email.id}`, {
             method: 'PUT',
             body: JSON.stringify({
@@ -168,18 +224,13 @@ function load_mailbox(mailbox) {
           }).then(()=>view_mail(email.id))
         });
         
-        console.log(mailunit)
-        document.querySelector('#emails-view').append(mailunit);
+        document.querySelector('#emails-view').append(card);
       });
-        
-
-
   });
 
 }
 
 function send_email(){
-  console.log("WORKS");
   fetch('/emails', {
     method: 'POST',
     body: JSON.stringify({
@@ -188,11 +239,5 @@ function send_email(){
         body: document.querySelector('#compose-body').value
     })
   }).then(()=>load_mailbox('sent'));
-  // .then(response => response.json())
-  // .then(result => {
-  //     console.log(result);
-  //     event.preventDefault();
-  //     load_mailbox('sent');
-  // });
   
 }
